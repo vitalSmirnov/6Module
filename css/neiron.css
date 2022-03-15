@@ -14,7 +14,6 @@ body{
     box-sizing: border-box;
 }
 .container{
-
     width: 100%;
     max-width: 1400px;
     margin: 0 auto;
@@ -30,7 +29,7 @@ h1, h2, h3, h4, h5, h6{
 
     height: 100vh;
     widows: 100%;
-    background: url("../img/intro.jpg") center no-repeat;
+    background: url("..img/intro.jpg") center no-repeat;
     background-size: cover;
 }
 .intro_tittle{
@@ -88,38 +87,3 @@ h1, h2, h3, h4, h5, h6{
     background-color:coral;
 }
 
-.team{
-    padding: 40px;
-    max-width: 600px;
-    margin: 30px auto;
-    display: flex;
-    justify-content: space-between;
-}
-.team_item{
-    display: flex;
-    flex-direction: column;
-    text-align: center;
-
-    font-weight: bold;
-    font-size: 30px;
-    color: white;
-
-}
-.team_link{
-    text-decoration: none;
-    color: white;
-    text-align: center;
-    text-decoration: none;
-    font-weight: bold;
-}
-
-.image_prev{
-    border-radius: 1000px;
-    background: linear-gradient(to bottom,#2824FF,#EB2222);
-}
-.team_item:hover .team_link img{
-    opacity: .7;
-}
-.team_link img{
-    transition: opacity .2s linear;
-}
