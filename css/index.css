@@ -65,7 +65,7 @@ h1, h2, h3, h4, h5, h6{
 
 .nav{
     text-transform: uppercase;
-    font-size: 30px;
+    font-size: 20px;
     font-weight: bold;
 }
 .nav_link{
@@ -82,10 +82,27 @@ h1, h2, h3, h4, h5, h6{
     background-color: aliceblue;
     transition: color 0.2s linear;
 }
+.active_nav_link{
+    display: inline-block;
+    vertical-align: top;
+    text-align: center;
+    width: 150px;
+    margin: 0 40px;
+    padding: 6px;
+    border-radius: 15px;
+    text-decoration: none;
+    color: black;
+    position: relative;
+    background-color: rgb(243, 167, 52);
+    transition: color 0.2s linear;
+}
 
 .nav_link:hover{
     color:white;
-    background-color:coral;
+    background-color:rgb(243, 167, 52);
+}
+.active_nav_link:hover{
+    color:white;
 }
 
 .team{
@@ -115,11 +132,11 @@ h1, h2, h3, h4, h5, h6{
 
 .image_prev{
     border-radius: 1000px;
-    background: linear-gradient(to bottom,#2824FF,#EB2222);
+    background: linear-gradient(bottom,#2824FF,#EB2222);
 }
-.team_item:hover .team_link img{
-    opacity: .7;
+.team_item:hover .team_link{
+    color: rgb(243, 167, 52);
 }
-.team_link img{
-    transition: opacity .2s linear;
+.team_link {
+    transition: color .2s linear;
 }
