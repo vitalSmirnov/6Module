@@ -18,18 +18,25 @@ body{
     max-width: 1600px;
     margin: 0 auto;
 }
+.container-2{
+    max-width: 700px;
+    width: 100%;
+    margin: 0 auto;
+    padding-top: 120px ;
+}
 
 .btn-container{
     display: flex;
     justify-content: space-around;
     align-items: center;
-    max-width: 600px;
-    width: 100%;
-    margin: 0 auto;
     padding-top: 30px;
 }
 .textArea{
-    width: 60px;  
+    width: 150px; 
+    height: 36px;
+    color: black;
+    text-align: center; 
+    border-radius: 15px;
 }
 
 .btn{
@@ -46,6 +53,9 @@ body{
     position: relative;
     background-color: aliceblue;
     transition: color 0.2s linear;
+}
+.btn-active{
+    color: rgb(243, 167, 52);
 }
 
 .btn:hover{
@@ -128,7 +138,6 @@ h1, h2, h3, h4, h5, h6{
     display: flex;
     flex-direction: column;
     justify-content: center;
-
     height: 100vh;
     background: url("../img/dust_texture.png") center no-repeat;
     background-size: cover;
@@ -136,10 +145,23 @@ h1, h2, h3, h4, h5, h6{
 
 .table{
     display: flex;
-    flex-direction: column;
     justify-content: center;
+    margin: 0 auto;
+    max-width: 700px;
 }
 th, td{
-    padding: 10px 10px;
-    border: 1px solid #000;
+    border: 1px solid white;
+    background-color: rgb(170, 170, 170);
+}
+
+.wall{
+    background-color: #000;
+}
+
+.start{
+    background-color: rgb(243, 167, 52);
+}
+
+.finish{
+    background-image: url("../img/dust_texture.png");
 }
