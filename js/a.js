@@ -1,31 +1,21 @@
-var canvas = document.getElementById("myCanvas");
-var ctx = canvas.getContext("2d");
+let table = document.createElement('table');
+let tbody = document.createElement('tbody');
 
-function heuristic(a, b){
-    return abs(a.x - b.x) + abs(a.y - b.y)
-}
-   
-start = {}
-goal = {}
-let frontier = new Queue()
-frontier.unshift(start, 0)
-came_from = {}
-came_from[start] = None
+table.appendChild(tbody)
+document.getElementById("table").appendChild(table)
 
-while (!empty(frontier)){
-    current = frontier.shift()
+//algorithm
 
-    if (current === goal){
-        break
-    }
-        
-    
-    for(next in graph.neighbors(current)){
-        if ( came_from.includes(next) ){
-            priority = heuristic(goal, next)
-            frontier.unshift(next, priority)
-            came_from[next] = current
-        }  
+document.querySelector(".btn").onclick = function(){
+    table.removeChild(tbody)
+    tbody = document.createElement('tbody');
+    table.appendChild(tbody)
+    var n = document.getElementById("poleDim").value;
+    for(i = 0; i < n; i += 1){
+        let row = document.createElement('tr');
+        for(j = 0; j < n; j++){
+            row.appendChild(document.createElement('td'))
+        }
+        tbody.appendChild(row)
     }
 }
-   
