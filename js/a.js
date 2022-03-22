@@ -1,12 +1,18 @@
-var table = document.createElement('table');
+const table = document.createElement('table');
 var tbody = document.createElement('tbody');
 table.appendChild(tbody)
 document.getElementById("table").appendChild(table)
 var dim = document.getElementById("poleDim")
 var startBtn = document.getElementById("btn_start")
-var wallsBtn = document.getElementById("btn-walls")
+var wallsBtn = document.getElementById("btn_walls")
 var startCell = document.querySelector('.start')
 var finishCell = document.querySelector('.finish')
+var n = document.getElementById("poleDim").value;
+var cleaner = {}
+cleaner.x
+cleaner.y
+
+
 
 
 //visual funcs
@@ -26,28 +32,30 @@ function sizeTable(row, td, n){
 
 function cellHandler(event){
     let activeCell = document.getElementById(event.path[0].id)
-    if (startCell === null && finishCell === null) {
-        activeCell.classList.add('start')
-        startCell = activeCell
-    } else if (finishCell === null && startCell != null) {
-        activeCell.classList.add('finish')
-        finishCell = activeCell
-    }else{
-        startCell.classList.remove('start')
-        finishCell.classList.remove('finish')
-        finishCell = null
-        activeCell.classList.add('start')
-        startCell = activeCell
+    if (!activeCell.classList.contains("wall")){
+        if (startCell === null && finishCell === null) {
+            activeCell.classList.add('start')
+            startCell = activeCell
+        } else if (finishCell === null && startCell != null) {
+            activeCell.classList.add('finish')
+            finishCell = activeCell
+        }else{
+            startCell.classList.remove('start')
+            finishCell.classList.remove('finish')
+            finishCell = null
+            activeCell.classList.add('start')
+            startCell = activeCell
+        }
+    } else{
+        alert("Дурак, что-ли это Стена")
     }
 }
-
-
 
 function dimensionChange(){
     table.removeChild(tbody)
     tbody = document.createElement('tbody');
     table.appendChild(tbody)
-    let n = document.getElementById("poleDim").value;
+    n = document.getElementById("poleDim").value;
     for(i = 0; i < n; i += 1){
         let row = document.createElement('tr');
         for(j = 0; j < n; j++){
@@ -64,9 +72,30 @@ function dimensionChange(){
 function start(){
     if (startCell == null || finishCell == null){
         alert("Choose the route")
+    }
+}
+
+function wallsChange(){
+    if (startCell == null || finishCell == null){
+        alert("Choose the route")
     }else{
-        alert(startCell.id.split('_'))
-        alert(finishCell.id.split('_'))
+        /*let list = document.querySelectorAll("td")
+         for (lst of list){
+            if (lst.id != startCell.id && lst.id != finishCell.id && !lst.classList.contains("wall")) {
+                lst.classList.add("wall")
+            }
+        } 
+        cleaner.x = (startCell.id.split("_"))[0]
+        cleaner.y = (startCell.id.split("_"))[1]*/
+        let x
+        let y
+        for (let i = 0; i < (n * n / 3); i++){
+            x = getRandomFrom()
+            y = getRandomFrom()
+            if (!document.getElementById(`${x}_${y}`).classList.contains("start" || "finish" || "wall")){
+                setField(x , y)
+            }
+        }
     }
 }
 
@@ -75,6 +104,20 @@ function start(){
 dim.addEventListener("change", dimensionChange);
 
 startBtn.addEventListener("click", start);
+wallsBtn.addEventListener("click", wallsChange);
 
+//mazeGen
+
+
+function getRandomFrom () {
+	return Math.floor(Math.random() * (n));
+}
+
+function setField (x, y) {
+	if (x < 0 || x >= n || y < 0 || y >= n) {
+		return null;
+	};
+    (document.getElementById(`${x}_${y}`)).classList.add("wall")
+}
 
 //algorithm
