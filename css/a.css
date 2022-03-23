@@ -162,6 +162,10 @@ th, td{
     background-color: rgb(243, 167, 52);
 }
 
+.path{
+    background-color: rgb(243, 167, 52);
+}
+
 .finish{
-    background-image: url("../img/dust_texture.png");
+    background-color: rgb(243, 106, 52);
 }
