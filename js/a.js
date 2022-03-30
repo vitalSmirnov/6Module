@@ -41,8 +41,7 @@ function cellHandler(event){
             startCell.classList.remove('start')
             finishCell.classList.remove('finish')
             finishCell = null
-            activeCell.classList.add('start')
-            startCell = activeCell
+            startCell = null
         }
     } else{
         alert("Дурак, что-ли это Стена")
@@ -54,17 +53,23 @@ function dimensionChange(){
     tbody = document.createElement('tbody');
     table.appendChild(tbody)
     n = document.getElementById("poleDim").value;
-    for(i = 0; i < n; i += 1){
-        let row = document.createElement('tr');
-        for(j = 0; j < n; j++){
-            let td = document.createElement('td')
-            td.id = `${i}_${j}`
-            td.addEventListener("click", cellHandler)
-            row.appendChild(td)
-            sizeTable(row, td, n)
-        }
-        tbody.appendChild(row)
+    if (n % 2 != 1){
+        alert("выберите нечетное число для лучшей работы")
     }
+    else{
+        for(i = 0; i < n; i += 1){
+            let row = document.createElement('tr');
+            for(j = 0; j < n; j++){
+                let td = document.createElement('td')
+                td.id = `${i}_${j}`
+                td.addEventListener("click", cellHandler)
+                row.appendChild(td)
+                sizeTable(row, td, n)
+            }
+            tbody.appendChild(row)
+        }
+    }
+    
 }
 
 function start(){
@@ -76,35 +81,51 @@ function start(){
         finishCell.y = parseInt((finishCell.id.split("_"))[1])
         startCell.x = parseInt((startCell.id.split("_"))[0])
         startCell.y = parseInt((startCell.id.split("_"))[1])
-        if (astar() == "failure"){
+        if (astar() == null){
             alert("Пути нет")
-        }else{
-            rePath()
         }
     }
 }
 
 function wallsChange(){
-    if (startCell == null || finishCell == null){
-        alert("Choose the route")
+    if (startCell != null){
+        alert("Remove Start / Finish")
     }else{
+        var openSpace = []
+        
         let list = document.querySelectorAll("td")
         
         for (lst of list){
-            if (lst.id != startCell.id && lst.id != finishCell.id && lst.classList.contains("wall")) {
-                lst.classList.remove("wall")
-            }
-        } 
-        let x
-        let y
-        for (let i = 0; i < (n * n / 4); i++){
-            x = getRandomFrom()
-            y = getRandomFrom()
-            elem = document.getElementById(`${x}_${y}`)
-            if (!elem.classList.contains("start" || "finish")){
-                setField(x , y)
+            lst.classList.add("wall")
+        }
+        for (ix = 1; ix < n; ix += 2) {
+            for (iy = 1; iy < n; iy += 2) {
+                setSpace(`${ix}_${iy}`)
+                let objMazeOpen = {
+                    id: '0_0',
+                    visited: false,
+                    neighbours : []
+                }
+                objMazeOpen.id = `${ix}_${iy}`
+                if (ix > 1 && ix < n - 2){
+                    objMazeOpen.neighbours.push(`${ix-2}_${iy}`, `${ix+2}_${iy}`)
+                } else if (ix == 1) {
+                    objMazeOpen.neighbours.push(`${ix+2}_${iy}`)
+                } else{
+                    objMazeOpen.neighbours.push(`${ix-2}_${iy}`)
+                }
+
+                if (iy > 1 && iy < n - 2){
+                    objMazeOpen.neighbours.push(`${ix}_${iy - 2}`, `${ix}_${iy + 2}`)
+                } else if (iy == 1) {
+                    objMazeOpen.neighbours.push(`${ix}_${iy + 2}`)
+                } else{
+                    objMazeOpen.neighbours.push(`${ix}_${iy - 2}`)
+                }
+                openSpace.push(objMazeOpen)
             }
         }
+        mazeGeneration(openSpace)
     }
 }
 
@@ -117,209 +138,283 @@ wallsBtn.addEventListener("click", wallsChange);
 
 //mazeGen
 
-
-function getRandomFrom () {
-	return Math.floor(Math.random() * (n));
+function setSpace(id){
+    (document.getElementById(id)).classList.remove("wall")
 }
 
-function setField (x, y) {
-	if (x < 0 || x >= n || y < 0 || y >= n) {
-		return null;
-	};
-    (document.getElementById(`${x}_${y}`)).classList.add("wall")
+function getRandomInt(max) {
+    return Math.floor(Math.random() * max);
+}
+
+function isNotVisited(openSpace) {
+    for (vis of openSpace) {
+        if (vis.visited == false) {
+            return true
+        }
+    }
+    return false
+}
+function isNeibhourVisited(curN, openSpace){
+    let ngbrs = []
+    console.log(openSpace[1].id)
+    for (ns of curN){
+        for (o of openSpace) {
+            if (o.id == ns && !o.visited) {
+                ngbrs.push(ns)
+            }
+        }
+    }
+    return ngbrs
+}
+
+function mazeGeneration(openSpace){
+
+    let stack = []
+    let rand
+    let close
+    let current = openSpace[0]
+    current.visited = true
+    while (isNotVisited(openSpace)) {
+        current.neighbours = isNeibhourVisited(current.neighbours, openSpace)
+        if (current.neighbours.length != 0) {
+            stack.push(current)
+            rand = getRandomInt(current.neighbours.length)
+            close = current.neighbours[rand]
+            if (close.split("_")[0] == (current.id).split("_")[0]){  /* одна строка*/
+                    if (parseInt(close.split("_")[1]) > parseInt(current.id.split("_")[1])) {
+                        let x = parseInt(close.split("_")[0])
+                        let y = parseInt(close.split("_")[1]) - 1
+                        setSpace(`${x}_${y}`)
+                    }else {
+                        let x = parseInt(close.split("_")[0])
+                        let y = parseInt(close.split("_")[1]) + 1
+                        setSpace(`${x}_${y}`)
+                    }
+            }else if (close.split("_")[1] == (current.id).split("_")[1]){ /* одна колонка*/
+                    if (parseInt(close.split("_")[0]) > parseInt(current.id.split("_")[0])) {
+                        let x = parseInt(close.split("_")[0]) - 1
+                        let y = parseInt(close.split("_")[1]) 
+                        setSpace(`${x}_${y}`)
+                    }else {
+                        let x = parseInt(close.split("_")[0]) + 1
+                        let y = parseInt(close.split("_")[1])
+                        setSpace(`${x}_${y}`)
+                    }
+            }
+            else {
+                console.log("TROUBLES")
+            }
+                for (op of openSpace) {
+                    if (op.id == close){
+                        current = op
+                        current.visited = true
+                    }
+                }
+        } 
+        else if (stack.length != 0) {
+            console.log(stack)
+            current = stack.pop()
+        } 
+        else {
+            console.log("что-то не так")
+            current = openSpace[getRandomInt(openSpace.length)]
+            while (!current.visited){
+                current = openSpace[getRandomInt(openSpace.length)]
+            }
+        }
+    }
 }
 
 //algorithm
+function minimum(openHeap, closeHeap){
+    let min = 999999999
+    let minElem
+    for (let op of openHeap) {
+        if (min >= op.f && isClosed(op.x, op.y, closeHeap)){
+            min = op.f
+            minElem = op
+        }
+    }
+    return minElem
+}
 
-function isWall(a, b){
-    const result = document.getElementById(`${a}_${b}`).classList.contains('wall')
-    console.log(result)
+
+function isWall(a, b) {
+    console.log(a,b, "is wall")
+    const result = (document.getElementById(`${a}_${b}`)).classList.contains('wall')
     return result
 }
 
-function heuristic(a, b){
+function isClosed(x, y, closeHeap) {
+    for ( let cl in closeHeap) {
+        console.log(cl)
+        if (x == closeHeap[cl].x && y == closeHeap[cl].y){
+            return false
+        }
+    }
+    return true
+}
+
+function isOpened(x, y, openHeap) {
+    for (let op of openHeap) {
+        if (x == op.x && y == op.y){
+            return true
+        }
+    }
+    return false
+}
+
+function isOpenedId(x, y, openHeap){
+    for (let op in openHeap) {
+        if (x == openHeap[op].x && y == openHeap[op].y){
+            return op
+        }
+    }
+}
+
+function heuristic(a, b) {
     return (Math.abs(finishCell.x - a) + Math.abs(finishCell.y - b))
 }
 
-function isOpen(a, b, cash, openArr){
-    for (let sou of openArr){
-        if (sou.x == a && sou.y == b){
-            if ((cash.w + cash.e) <= (sou.w + sou.e)){
-                openArr.pop(sou)
-                return true
+function setCheck(id){
+    let elem = document.getElementById(id)
+    elem.classList.add("check")
+}
+
+function setPath(id){
+    let elem = document.getElementById(id)
+    elem.classList.remove("visited")
+    elem.classList.remove("check")
+    elem.classList.add("path")
+}
+
+function setVisited(id){
+    let elem = document.getElementById(id)
+    elem.classList.remove("check")
+    elem.classList.add("visited")
+}
+
+function rePath(x, y, closeHeap){
+    console.log(x,y, "repath")
+    if (x == startCell.x && y == startCell.y) {
+        return true
+    }else{
+        for (cl of closeHeap) {
+            console.log(x, y, cl.x, cl.y)
+            if (cl.x == x && cl.y == y) {
+                setPath(`${x}_${y}`)
+                return rePath(cl.ax, cl.ay, closeHeap)
             }
-            return false
         }
-        console.log(sou.x, sou.y)
     }
-    return true
 }
 
-function isCLosed(a, b, closeArr){
-    for (let used of closeArr){
-        if (used.x == a && used.y == b){
-            return false
-        }
-        console.log(used.x, used.y)
-    }
-    return true
-}
-
-
-function astar(){
-    var closeArr = []
-    var openArr = []
-    let current = {
-        x: startCell.x, 
+function astar() {
+    let openHeap = []
+    var closeHeap = []
+    let curr = {
+        x: startCell.x,
         y: startCell.y,
         ax: null,
         ay: null,
-        w: 0,
-        e: 0,
-        f: 0
+        g: 0,
+        h: heuristic(startCell.x, startCell.y),
+        f: heuristic(startCell.x, startCell.y)
     }
+    openHeap.push(curr)
+    while (curr.x != finishCell.x || curr.y != finishCell.y) {
+        console.log(curr, "curr")
+        if (curr.x < n - 1 && !isWall(curr.x + 1, curr.y) && isClosed(curr.x+1,curr.y,closeHeap)){
+            setCheck(`${curr.x + 1}_${curr.y}`)
+            let cash = {
+                x: curr.x + 1,
+                y: curr.y,
+                ax: curr.x,
+                ay: curr.y,
+                g: 10,
+                h: heuristic(curr.x + 1, curr.y),
+                f: 10 + heuristic(curr.x + 1, curr.y)
+            }
+            if (isOpened(curr.x+1,curr.y, openHeap)){
+                let id = isOpenedId(curr.x+1,curr.y, openHeap)
+                if (openHeap[id].f > cash.f){
+                    openHeap[id] = cash
+                }
+            }else{
+                openHeap.push(cash)
+            }
+        }
 
-    openArr.push(current)
+        if (curr.x > 0 &&!isWall(curr.x - 1, curr.y) && isClosed(curr.x-1,curr.y,closeHeap)){
+            setCheck(`${curr.x - 1}_${curr.y}`)
+            let cash = {
+                x: curr.x - 1,
+                y: curr.y,
+                ax: curr.x,
+                ay: curr.y,
+                g: 10,
+                h: heuristic(curr.x - 1, curr.y),
+                f: 10 + heuristic(curr.x - 1, curr.y)
+            }
+            if (isOpened(curr.x-1,curr.y, openHeap)){
+                let id = isOpenedId(curr.x-1,curr.y, openHeap)
+                if (openHeap[id].f > cash.f){
+                    openHeap[id] = cash
+                }
+            }else{
+                openHeap.push(cash)
+            }
+        }
 
-    while (openArr.length != 0){
-        if (current.x == finishCell.x && current.y == finishCell.y) {
-            return "good"
+        if (curr.y < n - 1 &&!isWall(curr.x, curr.y + 1) && isClosed(curr.x,curr.y + 1,closeHeap)){
+            setCheck(`${curr.x}_${curr.y + 1}`)
+            let cash = {
+                x: curr.x,
+                y: curr.y + 1,
+                ax: curr.x,
+                ay: curr.y,
+                g: 10,
+                h: heuristic(curr.x, curr.y + 1),
+                f: 10 + heuristic(curr.x, curr.y + 1)
+            }
+            if (isOpened(curr.x,curr.y + 1, openHeap)){
+                let id = isOpenedId(curr.x,curr.y + 1, openHeap)
+                if (openHeap[id].f > cash.f){
+                    openHeap[id] = cash
+                }
+            }else{
+                openHeap.push(cash)
+            }
         }
 
-
-        if(current.x > 0 && isWall(current.x - 1, current.y) && isCLosed(current.x - 1, current.y, closeArr)){
+        if (curr.y > 0 && !isWall(curr.x, curr.y - 1) && isClosed(curr.x,curr.y - 1,closeHeap)){
+            setCheck(`${curr.x}_${curr.y - 1}`)
             let cash = {
-                x: current.x - 1, 
-                y: current.y,
-                ax: current.x, 
-                ay: current.y,
-                w: 10,
-                e: heuristic(current.x-1, current.y),
-                f: 10 + e
+                x: curr.x,
+                y: curr.y - 1,
+                ax: curr.x,
+                ay: curr.y,
+                g: 10,
+                h: heuristic(curr.x, curr.y - 1),
+                f: 10 + heuristic(curr.x, curr.y - 1)
             }
-            if (isOpen(current.x - 1, current.y,cash,openArr)) {
-                openArr.push(cash)
+            if (isOpened(curr.x,curr.y - 1, openHeap)){
+                let id = isOpenedId(curr.x,curr.y - 1, openHeap)
+                if (openHeap[id].f > cash.f){
+                    openHeap[id] = cash
+                }
+            }else{
+                openHeap.push(cash)
             }
         }
-        if(current.x < n - 1 && isWall(current.x + 1, current.y) && isCLosed(current.x + 1, current.y, closeArr)){
-            let cash = {
-                x: current.x + 1, 
-                y: current.y,
-                ax: current.x, 
-                ay: current.y,
-                w: 10,
-                e: heuristic(current.x + 1, current.y),
-                f: 10 + e
-            }
-            if (isOpen(current.x + 1, current.y,cash,openArr)) {
-                openArr.push(cash)
-            }
-        }
-        if(current.y > 0 && isWall(current.x, current.y - 1) && isCLosed(current.x, current.y - 1, closeArr)){
-            let cash = {
-                x: current.x, 
-                y: current.y - 1,
-                ax: current.x, 
-                ay: current.y,
-                w: 10,
-                e: heuristic(current.x, current.y - 1),
-                f: 10 + e
-            }
-            if (isOpen(current.x, current.y - 1,cash,openArr)) {
-                openArr.push(cash)
-            }
-        }
-        if(current.y < n - 1 && isWall(current.x, current.y + 1) && isCLosed(current.x, current.y + 1, closeArr)){
-            let cash = {
-                x: current.x, 
-                y: current.y + 1,
-                ax: current.x, 
-                ay: current.y,
-                w: 10,
-                e: heuristic(current.x, current.y + 1),
-                f: 10 + e
-            }
-            if (isOpen(current.x, current.y + 1,cash,openArr)) {
-                openArr.push(cash)
-            }
-        }
-        if(current.y > 0 && current.x > 0 && isWall(current.x - 1, current.y - 1) && isCLosed(current.x - 1, current.y - 1, closeArr)){
-            let cash = {
-                x: current.x - 1, 
-                y: current.y - 1,
-                ax: current.x, 
-                ay: current.y,
-                w: 14,
-                e: heuristic(current.x - 1, current.y - 1),
-                f: 14 + e
-            }
-            if (isOpen(current.x - 1, current.y - 1,cash,openArr)) {
-                openArr.push(cash)
-            }
-        }
-        if(current.y < n-1 && current.x < n - 1 && isWall(current.x + 1, current.y + 1) && isCLosed(current.x + 1, current.y + 1, closeArr)){
-            let cash = {
-                x: current.x + 1, 
-                y: current.y + 1,
-                ax: current.x, 
-                ay: current.y,
-                w: 14,
-                e: heuristic(current.x + 1, current.y + 1),
-                f: 14 + e
-            }
-            if (isOpen(current.x + 1, current.y + 1,cash,openArr)) {
-                openArr.push(cash)
-            }
-        }
-        if(current.y > 0 && current.x <  n - 1 && isWall(current.x- 1, current.y + 1) && isCLosed(current.x - 1, current.y + 1, closeArr)){
-            let cash = {
-                x: current.x - 1, 
-                y: current.y + 1,
-                ax: current.x, 
-                ay: current.y,
-                w: 14,
-                e: heuristic(current.x - 1, current.y + 1),
-                f: 14 + e
-            }
-            if (isOpen(current.x - 1, current.y + 1,cash,openArr)) {
-                openArr.push(cash)
-            }
-        }
-        if(current.y < n - 1 && current.x > 0 && isWall(current.x + 1, current.y - 1) && isCLosed(current.x + 1, current.y - 1, closeArr)){
-            let cash = {
-                x: current.x + 1, 
-                y: current.y - 1,
-                ax: current.x, 
-                ay: current.y,
-                w: 14,
-                e: heuristic(current.x + 1, current.y - 1),
-                f: 14 + e
-            }
-            if (isOpen(current.x + 1, current.y - 1,cash,openArr)) {
-                openArr.push(cash)
-            }
-        }
-        closeArr.push(current)
-        openArr.pop(current)
-        let minWeight = 99999
-        for(let min of openArr){
-            if (minWeight >= min.f){
-                minWeight = min.f
-                current = min
-            }
+        closeHeap.push(curr)
+        setVisited(`${curr.x}_${curr.y}`)
+        curr = minimum(openHeap, closeHeap)
+        if (curr.x == finishCell.x && curr.y == finishCell.y) {
+            closeHeap.push(curr)
         }
     }
-    return "failure"
+    rePath(finishCell.x, finishCell.y, closeHeap)
+    return "good"
 }
 
-function rePath(a, b){
-    while (a != startCell.x || b !=startCell.y){
-        for (let elem of closeArr) {
-            if (elem.x == a && elem.y == b) {
-                rePath(elem.ax, elem.ay)
-            }
-        }
-    }
-    (document.getElementById(`${a}_${b}`)).classList.add("path")
-    return null
-}

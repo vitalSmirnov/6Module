@@ -169,3 +169,11 @@ th, td{
 .finish{
     background-color: rgb(243, 106, 52);
 }
+
+.check {
+    background-color: gray;
+}
+
+.visited {
+    background-color: #333;
+}
