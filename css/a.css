@@ -171,9 +171,9 @@ th, td{
 }
 
 .check {
-    background-color: gray;
+    background-color: rgb(95, 94, 94);
 }
 
 .visited {
-    background-color: #333;
+    background-color: rgb(36, 36, 36);
 }

@@ -18,6 +18,11 @@ body{
     max-width: 1600px;
     margin: 0 auto;
 }
+
+.container-2 {
+    max-width: 700px;
+    margin: 0 auto;
+}
 h1, h2, h3, h4, h5, h6{
     margin: 0;
 }
@@ -92,10 +97,64 @@ h1, h2, h3, h4, h5, h6{
     display: flex;
     flex-direction: column;
     justify-content: center;
-
     height: 100vh;
     width: 100%;
     background: url("../img/dust_texture.png") center no-repeat;
     background-size: cover;
+}
+
+.btn-container{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 30px;
+}
+
+.slidecontainer{
+    
+    font-weight: 700;
+    color: aliceblue;
+    width: 200px;
+}
+
+.slider{
+    color: rgb(243, 167, 52);
+    width: 200px;
+}
+
+.btn{
+    display: inline-block;
+    vertical-align: top;
+    text-align: center;
+    width: 150px;
+    margin: 0 40px;
+    padding: 6px;
+    border-radius: 15px;
+    text-decoration: none;
+    font-weight: 900;
+    color: black;
+    position: relative;
+    background-color: aliceblue;
+    transition: color 0.2s linear;
+}
+
+
+.btn:hover{
+    color:white;
+    background-color:rgb(243, 167, 52);
+}
+
+.dimChanger{
+    display: inline-block;
+    border-radius: 20px;
+    text-align: center;
+    text-decoration: none;
+    font-size: 15px;
+    color: black;
+    background-color: aliceblue;
+    margin: 0 40px;
+    padding: 6px;
+    width: 35px;
+    font-weight: 900px;
 }
 
