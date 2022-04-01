@@ -18,6 +18,42 @@ body{
     max-width: 1600px;
     margin: 0 auto;
 }
+
+.container-2{
+    max-width: 1000px;
+    width: 100%;
+    margin: 0 auto;
+    padding-top: 120px ;
+}
+
+.btn-container{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding-top: 30px;
+}
+
+.btn{
+    display: inline-block;
+    vertical-align: top;
+    text-align: center;
+    width: 150px;
+    margin: 0 40px;
+    padding: 6px;
+    border-radius: 15px;
+    text-decoration: none;
+    font-weight: 900;
+    color: black;
+    position: relative;
+    background-color: aliceblue;
+    transition: color 0.2s linear;
+}
+
+.btn:hover{
+    color:white;
+    background-color:rgb(243, 167, 52);
+}
+
 h1, h2, h3, h4, h5, h6{
     margin: 0;
 }
@@ -99,3 +135,7 @@ h1, h2, h3, h4, h5, h6{
     background-size: cover;
 }
 
+#myCanvas {
+    background: white;
+    margin: 0 auto;
+}
