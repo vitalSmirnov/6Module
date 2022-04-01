@@ -11,7 +11,6 @@ var countClasters = 0
 
 
 function valueChanger(){
-    console.log(slider)
     let val = document.getElementById("slValue")
     val.innerHTML = slider.value
     countClasters = slider.value
@@ -61,11 +60,20 @@ startBtn.addEventListener("click", startClaster)
 function refreshClasters(){
     for ( let cc of clasterCenters) {
         ctx.beginPath();
-        ctx.arc(cc.x, cc.y, 10, 0, Math.PI*2)
+        ctx.arc(cc.x, cc.y, 11, 0, Math.PI*2)
         ctx.fillStyle = "white"
         ctx.fill();
     }
     clasterCenters = []
+}
+
+function notDot(center){
+    for (let dt of dotHeap){
+        if (Math.abs(dt.x - center.x) < 20 && Math.abs(dt.y - center.y) < 20){
+            return true
+        }
+    }
+    return false
 }
 
 function setCenters(){
@@ -77,6 +85,10 @@ function setCenters(){
             let center = {
                 x: getRndInt(600),
                 y: getRndInt(600),
+            }
+            while (notDot(center)) {
+                center.x = getRndInt(600)
+                center.y = getRndInt(600)
             }
             ctx.beginPath();
             ctx.arc(center.x, center.y, 10, 0, Math.PI*2)
