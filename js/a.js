@@ -156,7 +156,6 @@ function isNotVisited(openSpace) {
 }
 function isNeibhourVisited(curN, openSpace){
     let ngbrs = []
-    console.log(openSpace[1].id)
     for (ns of curN){
         for (o of openSpace) {
             if (o.id == ns && !o.visited) {
@@ -212,7 +211,6 @@ function mazeGeneration(openSpace){
                 }
         } 
         else if (stack.length != 0) {
-            console.log(stack)
             current = stack.pop()
         } 
         else {
@@ -240,14 +238,12 @@ function minimum(openHeap, closeHeap){
 
 
 function isWall(a, b) {
-    console.log(a,b, "is wall")
     const result = (document.getElementById(`${a}_${b}`)).classList.contains('wall')
     return result
 }
 
 function isClosed(x, y, closeHeap) {
     for ( let cl in closeHeap) {
-        console.log(cl)
         if (x == closeHeap[cl].x && y == closeHeap[cl].y){
             return false
         }
@@ -295,12 +291,10 @@ function setVisited(id){
 }
 
 function rePath(x, y, closeHeap){
-    console.log(x,y, "repath")
     if (x == startCell.x && y == startCell.y) {
         return true
     }else{
         for (cl of closeHeap) {
-            console.log(x, y, cl.x, cl.y)
             if (cl.x == x && cl.y == y) {
                 setPath(`${x}_${y}`)
                 return rePath(cl.ax, cl.ay, closeHeap)
@@ -323,7 +317,6 @@ function astar() {
     }
     openHeap.push(curr)
     while (curr.x != finishCell.x || curr.y != finishCell.y) {
-        console.log(curr, "curr")
         if (curr.x < n - 1 && !isWall(curr.x + 1, curr.y) && isClosed(curr.x+1,curr.y,closeHeap)){
             setCheck(`${curr.x + 1}_${curr.y}`)
             let cash = {

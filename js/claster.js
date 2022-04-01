@@ -15,8 +15,20 @@ function valueChanger(){
     val.innerHTML = slider.value
 }
 
+
+
+function refreshing(){
+    ctx.beginPath();
+    ctx.rect(0,0,600,600)
+    ctx.fillStyle = "white"
+    ctx.fill();
+}
+
+btnRefresh.addEventListener("click", refreshing)
+
+slider.addEventListener("change", valueChanger)
+
 canvas.addEventListener("mousedown", function(e){
- 
     let ClientRect = this.getBoundingClientRect();
     console.log(ClientRect, e.clientX, e.clientY)
     mouse.x = e.clientX - ClientRect.x
@@ -27,13 +39,3 @@ canvas.addEventListener("mousedown", function(e){
     ctx.fillStyle = "#000"
     ctx.fill();
 });
-
-function refreshing(){
-    ctx.beginPath();
-    ctx.rect(0,0,600,600)
-    ctx.fillStyle = "white"
-    ctx.fill();
-}
-
-btnRefresh.addEventListener("click", refreshing)
-slider.addEventListener("change", valueChanger)
