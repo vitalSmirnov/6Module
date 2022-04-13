@@ -56,7 +56,7 @@ function createNjMatix(matrix){
     for (let i = 0; i < vertHeap.length; i ++) {
         for (let j = 0; j < vertHeap.length; j++) {
             if (matrix[i][j] != 0) {
-                nj[i][j] = 1/ matrix[i][j]
+                nj[i][j] = 1 / matrix[i][j]
             }else{
                 nj[i][j] = 0
             }
@@ -81,7 +81,9 @@ function choice(a, matrix, njMatrix,pher) {
 function algorithm(matrix, njMatrix, pher){
     for (let time = 0; time < 10000; time ++) {
         for (let a of ants) {
-            for ()
+            for () {
+
+            }
             choice(a,matrix,njMatrix,pher)
         }
     }

@@ -7,12 +7,10 @@
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;1,500&display=swap" rel="stylesheet">
+        <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest"></script>
         
-        <title>Module 6</title> 
-        <style>
-            * { padding: 0; margin: 0; }
-            canvas { background: #eee; display: block; margin: 0 auto; }
-        </style>
+        <title>Module 6</title>
     </head>
 
     <body>
@@ -31,8 +29,18 @@
             </div>
         </header>
         <div class="main_part">
-            <canvas id="myCanvas" width="600" height="600"></canvas>
+            <canvas id="canvas" width="150" height="150"></canvas>
+
+            <div class="buttons">
+                <button id="clear-button">CLEAR</button>
+                <button id="predict-button">PREDICT</button>
+            </div>
+
+            <div class="result-box">
+                <div class="result" id="result">// waiting for input</div>
+            </div>
         </div>
+
         <script src="js/neiron.js"></script>
     </body>
 
