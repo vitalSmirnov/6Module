@@ -102,7 +102,6 @@ function setCenters(){
 }
 
 function changeCenters() {
-    console.log("change centers")
     betaClasterCenters = []
     for (let cntr of clasterCenters) {
         let betaCntr = {
@@ -149,7 +148,6 @@ function setColored(dot) {
 function isupdate(clasterCenters, betaClasterCenters){
     let k = 0
     for (cc in clasterCenters) {
-        console.log (betaClasterCenters[cc].x - clasterCenters[cc].x, betaClasterCenters[cc].y - clasterCenters[cc].y, 'isupdate')
         if (Math.abs(betaClasterCenters[cc].x - clasterCenters[cc].x) < 5 || Math.abs(betaClasterCenters[cc].y - clasterCenters[cc].y) < 5) {
             k ++
         }
@@ -186,12 +184,12 @@ function startClaster(){
     updateGroups()
     var timer = setTimeout(function run() {
         timedStart()
-        timer = setTimeout(run, 1000);
+        timer = setTimeout(run, 500);
         if (!isupdate(clasterCenters, betaClasterCenters)){
             console.log("stopping")
             clearInterval(timer)
         }
-      }, 1000);
+      }, 500);
 }
 
 function refreshing(){
