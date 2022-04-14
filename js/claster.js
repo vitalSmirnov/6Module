@@ -5,6 +5,7 @@ const btnRefresh = document.getElementById("btn-clear")
 const ctx = canvas.getContext("2d");
 
 var dotHeap = []
+var colorsOfCanvas = []
 var clasterCenters = []
 var betaClasterCenters = []
 var countClasters = 0
@@ -18,24 +19,18 @@ function valueChanger(){
 }
 
 
-
-function refreshing(){
-    dotHeap = []
-    clasterCenters = []
-    ctx.beginPath();
-    ctx.rect(0,0,600,600)
-    ctx.fillStyle = "white"
-    ctx.fill();
-}
-
 function getRndInt(max) {
     return Math.floor(Math.random() * max);
 }
 
 function generateColor() {
-    return '#' + Math.floor(Math.random()*16777215).toString(16)
-  }
+    let color = '#' + Math.floor(Math.random()*16777215).toString(16)
+    colorsOfCanvas.push(color)
+    return color
+}
 
+
+  
 
 //events
 btnRefresh.addEventListener("click", refreshing)
@@ -52,7 +47,6 @@ canvas.addEventListener("mousedown", function(e){
     mouse.x = e.clientX - ClientRect.x
     mouse.y = e.clientY - ClientRect.y
     dotHeap.push(mouse)
-    console.log(dotHeap)
     ctx.beginPath();
     ctx.arc(mouse.x, mouse.y, 10, 0, Math.PI*2)
     ctx.fillStyle = mouse.color
@@ -107,6 +101,44 @@ function setCenters(){
     }
 }
 
+function changeCenters() {
+    console.log("change centers")
+    betaClasterCenters = []
+    for (let cntr of clasterCenters) {
+        let betaCntr = {
+            x: cntr.x,
+            y: cntr.y,
+            color: cntr.color
+        }
+        betaClasterCenters.push(betaCntr)
+        let averageX = 0
+        let averageY = 0
+        let cc = 0
+        let checkOut = false
+        for (let dot of dotHeap) {
+            if (dot.color == cntr.color) {
+                averageX += dot.x
+                averageY += dot.y
+                cc += 1
+                checkOut = true
+            }
+        }
+        if (checkOut) {
+            ctx.beginPath();
+            ctx.rect(cntr.x, cntr.y, 10, 10)
+            ctx.fillStyle = "white"
+            ctx.fill();
+            cntr.x = averageX / cc
+            cntr.y = averageY / cc
+            ctx.beginPath();
+            ctx.rect(cntr.x, cntr.y, 8, 8)
+            ctx.fillStyle = cntr.color
+            ctx.fill();
+        }
+
+    }
+}
+
 function setColored(dot) {
     ctx.beginPath();
     ctx.arc(dot.x, dot.y, 10, 0, Math.PI*2)
@@ -117,7 +149,8 @@ function setColored(dot) {
 function isupdate(clasterCenters, betaClasterCenters){
     let k = 0
     for (cc in clasterCenters) {
-        if (Math.abs(clasterCenters[cc].x - betaClasterCenters[cc].x) < 10 && Math.abs(clasterCenters[cc].y - betaClasterCenters[cc].y) < 10) {
+        console.log (betaClasterCenters[cc].x - clasterCenters[cc].x, betaClasterCenters[cc].y - clasterCenters[cc].y, 'isupdate')
+        if (Math.abs(betaClasterCenters[cc].x - clasterCenters[cc].x) < 5 || Math.abs(betaClasterCenters[cc].y - clasterCenters[cc].y) < 5) {
             k ++
         }
     }
@@ -143,8 +176,31 @@ function updateGroups(){
         setColored(dot)
     }
 }
+function timedStart(){
+    changeCenters()
+    updateGroups()
+}
 
 function startClaster(){
     setCenters()
     updateGroups()
+    var timer = setTimeout(function run() {
+        timedStart()
+        timer = setTimeout(run, 1000);
+        if (!isupdate(clasterCenters, betaClasterCenters)){
+            console.log("stopping")
+            clearInterval(timer)
+        }
+      }, 1000);
+}
+
+function refreshing(){
+    dotHeap = []
+    clasterCenters = []
+    colorsOfCanvas = []
+    clearInterval(timer)
+    ctx.beginPath();
+    ctx.rect(0,0,600,600)
+    ctx.fillStyle = "white"
+    ctx.fill();
 }
