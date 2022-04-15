@@ -196,7 +196,6 @@ function refreshing(){
     dotHeap = []
     clasterCenters = []
     colorsOfCanvas = []
-    clearInterval(timer)
     ctx.beginPath();
     ctx.rect(0,0,600,600)
     ctx.fillStyle = "white"
